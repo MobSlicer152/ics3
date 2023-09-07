@@ -51,7 +51,7 @@ extern NTSTATUS NtRaiseHardError(
 
 // Statuses and flags
 #define STATUS_SERVICE_NOTIFICATION 0x40000018 // Makes NtRaiseHardError show a string instead of the NTSTATUS
-#define HARDERROR_OVERRIDE_ERRORMODE 0x100000000 // Makes it 
+#define HARDERROR_OVERRIDE_ERRORMODE 0x100000000 // Makes it not an error? (doesn't seem to be necessary)
 
 // Main function
 INT WinMain(HINSTANCE Instance, HINSTANCE PreviousInstance, PSTR CommandLine, INT ShowMode)
