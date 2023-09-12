@@ -13,27 +13,27 @@
 // What buttons to show on the message box
 typedef enum _HARDERROR_RESPONSE_OPTION
 {
-	OptionAbortRetryIgnore,
-	OptionOk,
-	OptionOkCancel,
-	OptionRetryCancel,
-	OptionYesNo,
-	OptionYesNoCancel,
-	OptionShutdownSystem
+    OptionAbortRetryIgnore,
+    OptionOk,
+    OptionOkCancel,
+    OptionRetryCancel,
+    OptionYesNo,
+    OptionYesNoCancel,
+    OptionShutdownSystem
 } HARDERROR_RESPONSE_OPTION, * PHARDERROR_RESPONSE_OPTION;
 
 // What button was clicked
 typedef enum _HARDERROR_RESPONSE
 {
-	ResponseReturnToCaller,
-	ResponseNotHandled,
-	ResponseAbort,
-	ResponseCancel,
-	ResponseIgnore,
-	ResponseNo,
-	ResponseOk,
-	ResponseRetry,
-	ResponseYes
+    ResponseReturnToCaller,
+    ResponseNotHandled,
+    ResponseAbort,
+    ResponseCancel,
+    ResponseIgnore,
+    ResponseNo,
+    ResponseOk,
+    ResponseRetry,
+    ResponseYes
 } HARDERROR_RESPONSE, * PHARDERROR_RESPONSE;
 
 // Native API function to show a message box or cause a blue screen, among other things
