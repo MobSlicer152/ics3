@@ -238,7 +238,7 @@ void DrawString(const char* string)
 
 int32_t main(int32_t argc, char* argv[])
 {
-    if (argc)
+    if (argc > 1)
     {
         DrawString(argv[1]);
     }
