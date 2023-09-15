@@ -1,0 +1,9 @@
+LIBRARY win32u
+
+EXPORTS
+    NtUserRegisterWindowClassExWOW @1223
+    NtUserCreateWindowEx @847
+    NtUserGetMessage @1019
+    NtUserTranslateMessage @1457
+    NtUserDispatchMessage @876
+    NtUserDestroyWindow @869
