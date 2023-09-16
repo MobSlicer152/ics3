@@ -1,7 +1,7 @@
 LIBRARY win32u
 
 EXPORTS
-    NtUserRegisterWindowClassExWOW @1223
+    NtUserRegisterClassExWOW @1223
     NtUserCreateWindowEx @847
     NtUserGetMessage @1019
     NtUserTranslateMessage @1457

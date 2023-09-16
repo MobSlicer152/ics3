@@ -100,7 +100,7 @@ int wWinMain(
     wndClass.hInstance = instance;
     wndClass.lpszClassName = className.Buffer;
 
-    RTL_ATOM classAtom = NtUserRegisterWindowClassExWOW(
+    RTL_ATOM classAtom = NtUserRegisterClassExWOW(
         &wndClass,
         &className,
         &className,
