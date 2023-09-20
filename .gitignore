@@ -1,6 +1,7 @@
 /.vs
 
 *.obj
+*.o
 *.class
 *.exe
 *.pdb
