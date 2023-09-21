@@ -59,17 +59,20 @@ _start:
 
 					; Reverse the bytes of the input
 					; Start index already set up earlier
-	.reverseloop:
-		dec rdi
-					; Swap the bytes
-		mov r12b, byte [r13 + rsi]
-		mov r14b, byte [r13 + rdi]
-		mov byte [r13 + rsi], r14b
-		mov byte [r13 + rdi], r12b
-		inc rsi
-		cmp rsi, rdi
-		jne .reverseloop
-	.reverseloopend:
+.reverseloop:
+	cmp rdi, rsi
+	jle .reverseloopend		; Jump if the destination index is less than the source
+					; index
+	dec rdi
+					; Swap the bytes (take a byte from each and store it (xchg could be used
+					; but I don't feel like it)
+	mov r12b, byte [r13 + rsi]
+	mov r14b, byte [r13 + rdi]
+	mov byte [r13 + rsi], r14b
+	mov byte [r13 + rdi], r12b
+	inc rsi
+	jmp .reverseloop
+.reverseloopend:
 
 					; Write the message and then the buffer
 	mov edi, stdout
@@ -87,25 +90,6 @@ _start:
 	mov edi, eax
 	mov eax, SYS_exit_group
 	syscall
-
-	global strlen
-strlen:
-	push rbp
-	mov rbp, rsp
-
-	push r11
-
-	xor eax, eax
-.loop:
-	mov r11b, byte [rdi + rax]
-	cmp r11b, byte [rsi + rax]
-	jz .end
-	inc eax
-.end:
-	pop r11
-
-	leave
-	ret
 
 	section .data
 prompt:
