@@ -86,8 +86,7 @@ _start:
 	syscall
 
 					; Exit so the program doesn't crash
-	neg eax
-	mov edi, eax
+	xor edi, edi
 	mov eax, SYS_exit_group
 	syscall
 
