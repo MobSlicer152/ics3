@@ -647,10 +647,8 @@ void DrawString(const wchar_t* string, const wchar_t* blank, const wchar_t* fill
                 }
             }
         }
-
-        // Put a newline after each row
-        putchar('\n');
-        putchar('\r');
+	
+	wprintf(L"\n");
     }
 }
 
