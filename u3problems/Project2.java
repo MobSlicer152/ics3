@@ -8,29 +8,29 @@ public class Project2 {
         // part of another. Here, it checks if the first three characters are
         // equal. This means the user can be lazy and it should still work.
 
-        if (month.regionMatches(true, 0, "jan", 0, 3)) {
+        if (month.regionMatches(true, 0, "jan", 0, 3) || month.equals("1")) {
             return 13;
-        } else if (month.regionMatches(true, 0, "feb", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "feb", 0, 3) || month.equals("2")) {
             return 14;
-        } else if (month.regionMatches(true, 0, "mar", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "mar", 0, 3) || month.equals("3")) {
             return 3;
-        } else if (month.regionMatches(true, 0, "apr", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "apr", 0, 3) || month.equals("4")) {
             return 4;
-        } else if (month.regionMatches(true, 0, "may", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "may", 0, 3) || month.equals("5")) {
             return 5;
-        } else if (month.regionMatches(true, 0, "jun", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "jun", 0, 3) || month.equals("6")) {
             return 6;
-        } else if (month.regionMatches(true, 0, "jul", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "jul", 0, 3) || month.equals("7")) {
             return 7;
-        } else if (month.regionMatches(true, 0, "aug", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "aug", 0, 3) || month.equals("8")) {
             return 8;
-        } else if (month.regionMatches(true, 0, "sep", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "sep", 0, 3) || month.equals("9")) {
             return 9;
-        } else if (month.regionMatches(true, 0, "oct", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "oct", 0, 3) || month.equals("10")) {
             return 10;
-        } else if (month.regionMatches(true, 0, "nov", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "nov", 0, 3) || month.equals("11")) {
             return 11;
-        } else if (month.regionMatches(true, 0, "dec", 0, 3)) {
+        } else if (month.regionMatches(true, 0, "dec", 0, 3) || month.equals("12")) {
             return 12;
         } else {
             return 0;
