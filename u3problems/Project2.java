@@ -1,8 +1,5 @@
 import java.lang.System;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Calendar;
 import java.util.Scanner;
 
 public class Project2 {
@@ -12,32 +9,53 @@ public class Project2 {
         // equal. This means the user can be lazy and it should still work.
 
         if (month.regionMatches(true, 0, "jan", 0, 3)) {
-            return Calendar.JANUARY;
+            return 13;
         } else if (month.regionMatches(true, 0, "feb", 0, 3)) {
-            return Calendar.FEBRUARY;
+            return 14;
         } else if (month.regionMatches(true, 0, "mar", 0, 3)) {
-            return Calendar.MARCH;
+            return 3;
         } else if (month.regionMatches(true, 0, "apr", 0, 3)) {
-            return Calendar.APRIL;
+            return 4;
         } else if (month.regionMatches(true, 0, "may", 0, 3)) {
-            return Calendar.MAY;
+            return 5;
         } else if (month.regionMatches(true, 0, "jun", 0, 3)) {
-            return Calendar.JUNE;
+            return 6;
         } else if (month.regionMatches(true, 0, "jul", 0, 3)) {
-            return Calendar.JULY;
+            return 7;
         } else if (month.regionMatches(true, 0, "aug", 0, 3)) {
-            return Calendar.AUGUST;
+            return 8;
         } else if (month.regionMatches(true, 0, "sep", 0, 3)) {
-            return Calendar.SEPTEMBER;
+            return 9;
         } else if (month.regionMatches(true, 0, "oct", 0, 3)) {
-            return Calendar.OCTOBER;
+            return 10;
         } else if (month.regionMatches(true, 0, "nov", 0, 3)) {
-            return Calendar.NOVEMBER;
+            return 11;
         } else if (month.regionMatches(true, 0, "dec", 0, 3)) {
-            return Calendar.DECEMBER;
+            return 12;
         } else {
             return 0;
         }
+    }
+
+    private static String getWeekDay(int h) {
+        switch (h) {
+        case 0:
+            return "Saturday";
+        case 1:
+            return "Sunday";
+        case 2:
+            return "Monday";
+        case 3:
+            return "Tuesday";
+        case 4:
+            return "Wednesday";
+        case 5:
+            return "Thursday";
+        case 6:
+            return "Friday";
+        default:
+            return "Unknown";
+        }        
     }
 
     public static void main(String[] args) {
@@ -49,14 +67,18 @@ public class Project2 {
         System.out.print("Enter the month: ");
         String month = scanner.nextLine();
         System.out.print("Enter the day of the month: ");
-        int mday = scanner.nextInt();
+        int q = scanner.nextInt();
         scanner.nextLine();
 
-        int nmonth = getMonthNumber(month);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, nmonth, mday);
+        int m = getMonthNumber(month);
+        int k = year % 100;
+        int j = year / 100;
 
-        System.out.println(new SimpleDateFormat("EEEE").format(calendar.getTime()));
+        System.out.printf("year %d m %d q %d k %d j %d\n", year, m, q, k, j);
+
+        int h = (q + ((13 * (m + 1)) / 5) + k + (k / 4) + (j / 4) + (5 * j)) % 7;
+
+        System.out.printf("%s %d, %d is/was a %s\n", month, q, year, getWeekDay(h));
     }
 }
 
