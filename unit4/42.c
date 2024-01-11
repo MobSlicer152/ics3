@@ -6,8 +6,11 @@ int main(void)
 {
     int n;
     long double iterations;
+    long double start;
+    long double duration;
 
-    srand(time(NULL));
+    start = time(NULL);
+    srand(start);
 
     n = 0;
     iterations = 0;
@@ -17,6 +20,8 @@ int main(void)
         iterations++;
     }
 
-    printf("n is 42 after %.0Lf iterations\n", iterations);
+    duration = (long double)time(NULL) - start;
+    printf("n is 42 after %.0Lf iterations and %.0Lf seconds (average of %.0Lf iterations per second), RAND_MAX is %d\n",
+        iterations, duration, iterations / duration, RAND_MAX);
 }
 
