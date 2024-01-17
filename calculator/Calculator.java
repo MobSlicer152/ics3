@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Calculator {
     private static Scanner scanner;
     private static boolean running;
+    private static String lastOperation;
     private static double lastAnswer;
     private static DegreesMode degreesMode;
 
@@ -20,6 +21,7 @@ public class Calculator {
 
         Double[] operands = operator.getInputs(scanner);
         lastAnswer = operator.execute(operands);
+        lastOperation = operator.toString();
     }
 
     private static void doTrigFunction() {
@@ -41,6 +43,7 @@ public class Calculator {
         if (degreesMode == DegreesMode.DEGREES && function.givesAngle()) {
             lastAnswer = Math.toDegrees(lastAnswer);
         }
+        lastOperation = function.toString();
     }
 
     private static void doExpression() {
@@ -62,9 +65,11 @@ public class Calculator {
             MainMenuOptions option = Util.displayMenu(scanner, MainMenuOptions.class, String.format(
                 " ---<[ CALCULATOR ]>---\n" +
                 "------------------------\n" +
+                "Last operation: %s\n" +
                 "Last answer: %G\n" +
                 "%s\n" +
                 "------------------------\n",
+                lastOperation,
                 lastAnswer,
                 degreesMode
             ));
@@ -90,6 +95,6 @@ public class Calculator {
             }
         }
 
-        System.out.printf("Goodbye. The last answer was %f.\n", lastAnswer);
+        System.out.printf("Goodbye. The last answer was %f, to %s.\n", lastAnswer, lastOperation);
     }
 }
