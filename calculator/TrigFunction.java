@@ -1,5 +1,7 @@
 package calculator;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -107,6 +109,10 @@ public enum TrigFunction {
         return token;
     }
 
+    private boolean equals(String token) {
+        return ((Object)this.token).equals(token);
+    }
+
     public int getArgumentCount() {
         return argumentCount;
     }
@@ -117,5 +123,15 @@ public enum TrigFunction {
 
     public boolean givesAngle() {
         return givesAngle;
+    }
+
+    public static TrigFunction getByToken(String token) {
+        // https://stackoverflow.com/questions/1128723/how-do-i-determine-whether-an-array-contains-a-particular-value-in-java
+        // This might be faster than a for loop;
+        Optional<TrigFunction> function = Arrays.stream(values()).filter((v) -> v.equals(token)).findFirst();
+        if (function.isPresent()) {
+            return function.get();
+        }
+        return null;
     }
 }

@@ -1,6 +1,8 @@
 package calculator;
 
 import java.util.function.Function;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 
 public enum Operator {
@@ -133,6 +135,10 @@ public enum Operator {
         return token;
     }
 
+    private boolean equals(String token) {
+        return ((Object)this.token).equals(token);
+    }
+
     public int getPrecedence() {
         return precedence;
     }
@@ -143,5 +149,15 @@ public enum Operator {
 
     public int getOperandCount() {
         return operandCount;
+    }
+
+    public static Operator getByToken(String token) {
+        // https://stackoverflow.com/questions/1128723/how-do-i-determine-whether-an-array-contains-a-particular-value-in-java
+        // This might be faster than a for loop;
+        Optional<Operator> operator = Arrays.stream(values()).filter((v) -> v.equals(token)).findFirst();
+        if (operator.isPresent()) {
+            return operator.get();
+        }
+        return null;
     }
 }
