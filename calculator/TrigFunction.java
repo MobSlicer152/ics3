@@ -4,7 +4,6 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public enum TrigFunction {
-    // https://en.wikipedia.org/wiki/Trigonometric_functions#Power_series_expansion
     SINE("Sine (sin)", "sin", 1, true, false,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
