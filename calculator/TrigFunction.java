@@ -14,15 +14,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-                double result = 0;
-                double x = arguments[0];
-                for (int n = 0; n < 7; n++) { // 7 iterations gives a low enough margin of error
-                    double twoNPlus1 = 2 * n + 1;
-                    result += (Math.pow(-1, n) /
-                            Operator.FACTORIAL.execute(new Double[] { twoNPlus1 }))
-                            * Math.pow(x, twoNPlus1);
-                }
-                return result;
+                return Math.sin(arguments[0]);
             }),
     COSINE("Cosine (cos)", "cos", 1, true, false,
             (Scanner scanner) -> {
@@ -33,8 +25,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-                double x = arguments[0];
-                return SINE.execute(new Double[] { Math.PI / 2 - x });
+                return Math.cos(arguments[0]);
             }),
     TANGENT("Tangent (tan)", "tan", 1, true, false,
             (Scanner scanner) -> {
@@ -45,9 +36,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-                double x = arguments[0];
-                // tan = sin/cos
-                return SINE.execute(new Double[] { x }) / COSINE.execute(new Double[] { x });
+                return Math.tan(arguments[0]);
             }),
     ARCSINE("Arcsine (asin)", "asin", 1, false, true,
             (Scanner scanner) -> {
@@ -58,24 +47,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-
-                double result = 0;
-
-                double z = arguments[0];
-                if (Math.abs(z) > 1) {
-                    return Double.NaN; // idk if NaN is right, but it's out of range and I don't want the program
-                                       // crashing, so I'm lazy
-                }
-
-                for (double n = 0; n < 7; n++) {
-                    double twoN = 2 * n;
-                    result += (Operator.FACTORIAL.execute(new Double[] { twoN }) /
-                            Math.pow((Math.pow(2, n) * Operator.FACTORIAL.execute(new Double[] { n })), 2)) *
-                            (Math.pow(z, twoN + 1) / (twoN + 1));
-                }
-                System.out.println(Math.asin(z));
-
-                return result;
+                return Math.asin(arguments[0]);
             }),
     ARCCOSINE("Arccosine (acos)", "acos", 1, false, true,
             (Scanner scanner) -> {
@@ -86,8 +58,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-                double x = arguments[0];
-                return Math.PI / 2 - SINE.execute(new Double[] { x });
+                return Math.acos(arguments[0]);
             }),
     ARCTANGENT("Arctangent (atan)", "atan", 1, false, true,
             (Scanner scanner) -> {
@@ -98,26 +69,7 @@ public enum TrigFunction {
             },
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
-
-                double result = 0;
-
-                double z = arguments[0];
-                if (Math.abs(z) > 1) {
-                    return Double.NaN; // idk if NaN is right, but it's out of range and I don't want the program
-                                       // crashing, so I'm lazy
-                }
-
-                for (double n = 0; n < 100; n++) {
-                    double twoN = 2 * n;
-                    result += (Math
-                            .pow((Math.pow(2, twoN) * Math.pow(Operator.FACTORIAL.execute(new Double[] { n }), 2)), 2))
-                            /
-                            (Operator.FACTORIAL.execute(new Double[] { twoN + 1 })) *
-                            (Math.pow(z, twoN + 1) / Math.pow(1 + Math.pow(z, 2), n + 1));
-                }
-
-                System.out.println(Math.atan(z));
-                return result;
+                return Math.atan(arguments[0]);
             });
 
     private String text;
