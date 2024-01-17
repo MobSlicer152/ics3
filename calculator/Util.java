@@ -1,5 +1,6 @@
 package calculator;
 
+import java.lang.Double;
 import java.lang.Enum;
 import java.lang.Long;
 import java.lang.System;
@@ -32,7 +33,28 @@ public class Util {
         return result;
     }
 
-    // Display a menu of the values of any enum and let the user pick a valid constant
+    // Get a double
+    public static double getValidDouble(Scanner scanner, String message) {
+        double result = 0;
+        boolean invalid = false;
+
+        do {
+            System.out.print(message);
+
+            try {
+                result = scanner.nextDouble();
+                invalid = false;
+            } catch (InputMismatchException e) {
+                invalid = true;
+                scanner.next();
+                continue;
+            }
+        } while (invalid);
+
+        return result;
+    }
+
+    // Display a menu of the values of any enum and let the user pick a valid constant, or null to go back
     public static <E extends Enum<E>> E displayMenu(Scanner scanner, Class<E> enumClass, String header) {
         int i = 1;
         E option;
@@ -44,31 +66,16 @@ public class Util {
             System.out.printf("%d. %s\n", i++, e);
         }
 
+        System.out.printf("0. Leave\n");
+
         System.out.println();
-        i = Util.getIntInRange(scanner, "Choose", 1, enumClass.getEnumConstants().length, true);
+        i = Util.getIntInRange(scanner, "Choose", 0, enumClass.getEnumConstants().length, true);
 
         // Get the value
-        return enumClass.getEnumConstants()[i - 1];
-    }
-
-    // Get a string with the number represented in the given base
-    public static String getNumberInBase(double number, Base base) {
-        switch (base) {
-        case Base.BINARY:
-            return String.format("0b%s", Long.toBinaryString((long)number));
-        case Base.OCTAL:
-            return String.format("0o%o", (long)number);
-        case Base.DECIMAL:
-            // from https://stackoverflow.com/questions/703396/how-to-nicely-format-floating-numbers-to-string-without-unnecessary-decimal-0s
-            if (number == (long)number) {
-                return String.format("%d", (long)number);
-            } else {
-                return String.format("%s (%g)", number, number); // %s uses as many decimal places as necessary, instead of a fixed number like %f?
-            }
-        case Base.HEXADECIMAL:
-            return String.format("0x%X", (long)number);
+        if (i == 0) {
+            return null;
+        } else {
+            return enumClass.getEnumConstants()[i - 1];
         }
-
-        return "";
     }
 }

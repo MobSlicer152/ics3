@@ -2,11 +2,10 @@ package calculator;
 
 public enum MainMenuOptions {
     SINGLE_OPERATION("Single operation"),
-    FUNCTION("Function"),
+    TRIG_FUNCTION("Trigonometric function"),
     EXPRESSION("Mathematical expression"),
     REVERSE_POLISH("Reverse Polish notation"),
-    SET_BASE("Set base"),
-    QUIT("Quit");
+    TOGGLE_DEGREES("Set degrees or radians");
 
     private String text;
     private MainMenuOptions(String text) {

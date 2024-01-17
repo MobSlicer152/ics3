@@ -1,6 +1,6 @@
 package calculator;
 
-public enum TokenType {
+public enum TokenTypes {
     NUMBER,
     FUNCTION,
     OPERATOR;
