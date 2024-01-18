@@ -110,7 +110,10 @@ public enum TrigFunction {
     }
 
     private boolean equals(String token) {
-        return ((Object)this.token).equals(token);
+        if (token != null && token.length() >= this.token.length()) {
+            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
+        }
+        return false;
     }
 
     public int getArgumentCount() {

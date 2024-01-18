@@ -96,7 +96,7 @@ public enum Operator {
                 };
             },
             (Double[] operands) -> {
-                return operands[0] + operands[1];
+                return operands[0] - operands[1];
             });
 
     private String text;
@@ -136,7 +136,10 @@ public enum Operator {
     }
 
     private boolean equals(String token) {
-        return ((Object)this.token).equals(token);
+        if (token != null && token.length() >= this.token.length()) {
+            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
+        }
+        return false;
     }
 
     public int getPrecedence() {

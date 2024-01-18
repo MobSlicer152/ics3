@@ -25,9 +25,10 @@ public class Util {
                 result = scanner.nextInt();
             } catch (InputMismatchException e) {
                 result = 0;
-                scanner.next(); // flush the scanner
+                scanner.nextLine();
                 continue;
             }
+            scanner.nextLine();
         } while (result < min || result > max);
 
         return result;
@@ -46,9 +47,10 @@ public class Util {
                 invalid = false;
             } catch (InputMismatchException e) {
                 invalid = true;
-                scanner.next();
+                scanner.nextLine();
                 continue;
             }
+            scanner.nextLine();
         } while (invalid);
 
         return result;

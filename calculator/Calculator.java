@@ -47,7 +47,14 @@ public class Calculator {
     }
 
     private static void doExpression() {
+        System.out.print(
+            " ---<[ EXPRESSION ]>---\n" +
+            "------------------------\n" +
+            "Enter an expression (parentheses and all other operators/functions supported):\n");
+        String expression = scanner.nextLine();
+        ExpressionParser.parseAndEvaluate(expression);
 
+        lastOperation = expression;
     }
 
     private static void doReversePolish() {
