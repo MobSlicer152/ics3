@@ -3,7 +3,7 @@ package calculator;
 import java.lang.Character;
 
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class ExpressionParser {
@@ -39,8 +39,8 @@ public class ExpressionParser {
 
             if (i < expression.length()) {
                 // Don't go out of bounds
-                if (tokenEnd >= expression.length()) {
-                    tokenEnd = expression.length() - 1;
+                if (tokenEnd > expression.length()) {
+                    tokenEnd = expression.length();
                 }
 
                 // Skip right parentheses (but they get added earlier in the loop in the next iteration)
@@ -48,9 +48,8 @@ public class ExpressionParser {
                     tokenEnd--;
                 }
 
-                // Skip an empty string
                 if (i >= tokenEnd) {
-                    continue;
+                    i = tokenEnd - 1;
                 }
 
                 // Get the token string
@@ -77,6 +76,10 @@ public class ExpressionParser {
                 }
 
                 i--;
+
+                if (tokenEnd >= expression.length() - 1) {
+                    break;
+                }
             }
         }
 
@@ -86,12 +89,77 @@ public class ExpressionParser {
     // Shunting yard algorithm to get Reverse Polish Notation
     // It doesn't reject all invalid expressions, but it can detect
     // mismatched parentheses and should work fine
+    // https://en.wikipedia.org/wiki/Shunting_yard_algorithm#The_algorithm_in_detail
     public static String makeRpn(ArrayList<Token<?>> tokens) {
-        for (int i = 0; i < tokens.size(); i++) {
-            System.out.println(tokens.get(i));
+        Stack<Token<?>> operatorStack = new Stack<>();
+        ArrayList<Token<?>> outputQueue = new ArrayList<>();
+
+        for (Token<?> token : tokens) {
+            System.out.println(token);
+            switch (token.getType()) {
+            case TokenType.NUMBER:
+                outputQueue.add(token);
+                break;
+            case TokenType.FUNCTION:
+            case TokenType.LEFT_PARENTHESIS:
+                operatorStack.push(token);
+                break;
+            case TokenType.OPERATOR: {
+                Operator o1 = (Operator)token.getData();
+                // I think the description includes right parentheses as
+                // operators, but they have the lowest precedence (I think),
+                // so they don't come up in this condition anyway
+                while (!operatorStack.isEmpty() && operatorStack.getFirst().getType() == TokenType.OPERATOR) {
+                    Operator o2 = (Operator)operatorStack.getFirst().getData();
+                    if (o2.getPrecedence() > o1.getPrecedence() ||
+                        (o1.getPrecedence() == o2.getPrecedence() &&
+                             o1.getAssociativity() == Associativity.LEFT)) {
+                        outputQueue.add(operatorStack.removeFirst());
+                    }
+                }
+                outputQueue.add(token);
+                break;
+            }
+            case TokenType.RIGHT_PARENTHESIS:
+                while (operatorStack.getFirst().getType() != TokenType.LEFT_PARENTHESIS) {
+                    if (operatorStack.isEmpty()) {
+                        System.out.println("Mismatched parentheses (case 1)");
+                        return null;
+                    }
+                    outputQueue.add(operatorStack.removeFirst());
+                }
+                if (operatorStack.getFirst().getType() != TokenType.LEFT_PARENTHESIS) {
+                    System.out.println("Mismatched parentheses (case 2)");
+                    return null;
+                }
+                operatorStack.removeFirst();
+                if (!operatorStack.isEmpty() && operatorStack.getFirst().getType() == TokenType.FUNCTION) {
+                    outputQueue.add(operatorStack.removeFirst());
+                }
+                break;
+            case TokenType.UNKNOWN:
+            default:
+                System.out.println("Ignoring unknown token");
+                break;
+            }
         }
-        
-        return "";
+
+        for (Token<?> token : operatorStack) {
+            if (token.getType() == TokenType.LEFT_PARENTHESIS) {
+                System.out.println("Mismatched parentheses (case 3)");
+                return null;
+            }
+            outputQueue.add(operatorStack.removeFirst());
+        }
+
+        String rpn = "";
+        for (Token<?> token : outputQueue) {
+            System.out.println(token);
+            rpn += String.format("%s ", token.getRpnString());
+        }
+
+        System.out.println(rpn);
+        return rpn;
     }
 
     public static double parseAndEvaluate(String expression) {
