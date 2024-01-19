@@ -3,50 +3,65 @@ package calculator;
 import java.lang.Character;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class ExpressionParser {
-    // This might be bad, but it will work.
+    // This code is far from perfect or optimal, but it seems to handle the cases I can think of.
     // Mainly, parentheses are handled weirdly, and there are better ways of identifying tokens.
+    // Additionally, it works on some pretty complex test inputs from ChatGPT.
     public static ArrayList<Token<?>> parse(String expression) {
         ArrayList<Token<?>> tokens = new ArrayList<>();
         for (int i = 0; i < expression.length(); i++) {
             // Skip whitespace
-            while (Character.isWhitespace(expression.charAt(i)) && i < expression.length()) {
+            while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
                 i++;
             }
 
             // Get the next whitespace
             int tokenEnd = i;
-            while (!Character.isWhitespace(expression.charAt(tokenEnd)) && tokenEnd < expression.length() - 1) {
+            while (tokenEnd < expression.length() && !Character.isWhitespace(expression.charAt(tokenEnd))) {
                 tokenEnd++;
             }
 
-            // Get parentheses
-            if (expression.charAt(i) == '(') {
+            // Get left parentheses
+            while (i < expression.length() && expression.charAt(i) == '(') {
                 tokens.add(new Token<Object>(TokenType.LEFT_PARENTHESIS, null));
-                i++;
-            } else if (expression.charAt(i) == ')') {
-                tokens.add(new Token<Object>(TokenType.RIGHT_PARENTHESIS, null));
                 i++;
             }
 
-            // Only if the parenthesis wasn't the end
+            // Get right parentheses
+            while (i < expression.length() && expression.charAt(i) == ')') {
+                tokens.add(new Token<Object>(TokenType.RIGHT_PARENTHESIS, null));
+                i++;
+                tokenEnd--;
+            }
+
             if (i < expression.length()) {
-                if (i == tokenEnd) {
+                // Don't go out of bounds
+                if (tokenEnd >= expression.length()) {
+                    tokenEnd = expression.length() - 1;
+                }
+
+                // Skip right parentheses (but they get added earlier in the loop in the next iteration)
+                while (expression.charAt(tokenEnd - 1) == ')') {
+                    tokenEnd--;
+                }
+
+                // Skip an empty string
+                if (i >= tokenEnd) {
                     continue;
                 }
 
+                // Get the token string
                 String tokenStr = expression.substring(i, tokenEnd);
-                if (!tokenStr.equals(")") && tokenStr.endsWith(")")) {
-                    tokenStr = tokenStr.substring(0, tokenStr.length() - 1);
-                }
 
                 // Add the real length of the token to i
                 Token<?> token = Token.interpret(tokenStr);
                 tokens.add(token);
                 switch (token.getType()) {
                 case TokenType.NUMBER:
-                    while (expression.charAt(i) == '-' || Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.') {
+                    while (i < expression.length() && (expression.charAt(i) == '-' || Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
                         i++;
                     };
                     break;
@@ -54,10 +69,10 @@ public class ExpressionParser {
                     i += ((Operator)token.getData()).getToken().length();
                     break;
                 case TokenType.FUNCTION:
-                    i += ((TrigFunction)token.getData()).getToken().length();
+                    i += ((MathFunction)token.getData()).getToken().length();
                     break;
                 default:
-                    i++; // to cancel out the i-- that's used on all the other ones
+                    i += tokenStr.length();
                     break;
                 }
 
@@ -68,6 +83,9 @@ public class ExpressionParser {
         return tokens;
     }
 
+    // Shunting yard algorithm to get Reverse Polish Notation
+    // It doesn't reject all invalid expressions, but it can detect
+    // mismatched parentheses and should work fine
     public static String makeRpn(ArrayList<Token<?>> tokens) {
         for (int i = 0; i < tokens.size(); i++) {
             System.out.println(tokens.get(i));

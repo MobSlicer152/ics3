@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Function;
 
-public enum TrigFunction {
-    SINE("Sine (sin)", "sin", 1, true, false,
+public enum MathFunction {
+    SINE("Sine (sin)", "sin", 1, true, true, false,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -17,7 +17,7 @@ public enum TrigFunction {
                 assert (arguments.length == 1);
                 return Math.sin(arguments[0]);
             }),
-    COSINE("Cosine (cos)", "cos", 1, true, false,
+    COSINE("Cosine (cos)", "cos", 1, true, true, false,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -28,7 +28,7 @@ public enum TrigFunction {
                 assert (arguments.length == 1);
                 return Math.cos(arguments[0]);
             }),
-    TANGENT("Tangent (tan)", "tan", 1, true, false,
+    TANGENT("Tangent (tan)", "tan", 1, true, true, false,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -39,7 +39,7 @@ public enum TrigFunction {
                 assert (arguments.length == 1);
                 return Math.tan(arguments[0]);
             }),
-    ARCSINE("Arcsine (asin)", "asin", 1, false, true,
+    ARCSINE("Arcsine (asin)", "asin", 1, true, false, true,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -50,7 +50,7 @@ public enum TrigFunction {
                 assert (arguments.length == 1);
                 return Math.asin(arguments[0]);
             }),
-    ARCCOSINE("Arccosine (acos)", "acos", 1, false, true,
+    ARCCOSINE("Arccosine (acos)", "acos", 1, true, false, true,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -61,7 +61,7 @@ public enum TrigFunction {
                 assert (arguments.length == 1);
                 return Math.acos(arguments[0]);
             }),
-    ARCTANGENT("Arctangent (atan)", "atan", 1, false, true,
+    ARCTANGENT("Arctangent (atan)", "atan", 1, true, false, true,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -71,21 +71,33 @@ public enum TrigFunction {
             (Double[] arguments) -> {
                 assert (arguments.length == 1);
                 return Math.atan(arguments[0]);
+            }),
+    SQUARE_ROOT("Square root (sqrt)", "sqrt", 1, false, false, false,
+            (Scanner scanner) -> {
+                return new Double[] {
+                        Math.abs(Util.getValidDouble(scanner, "Enter the number: "))
+                };
+            },
+            (Double[] operands) -> {
+                assert (operands.length == 1);
+                return Math.sqrt(operands[0]);
             });
 
     private String text;
     private String token;
     private int argumentCount;
+    private boolean isTrig;
     private boolean takesAngle;
     private boolean givesAngle;
     private Function<Scanner, Double[]> getInputsFunction;
     private Function<Double[], Double> executeFunction;
 
-    private TrigFunction(String text, String token, int argumentCount, boolean takesAngle, boolean givesAngle,
+    private MathFunction(String text, String token, int argumentCount, boolean isTrig, boolean takesAngle, boolean givesAngle,
             Function<Scanner, Double[]> getInputsFunction, Function<Double[], Double> executeFunction) {
         this.text = text;
         this.token = token;
         this.argumentCount = argumentCount;
+        this.isTrig = isTrig;
         this.takesAngle = takesAngle;
         this.givesAngle = givesAngle;
         this.getInputsFunction = getInputsFunction;
@@ -105,19 +117,18 @@ public enum TrigFunction {
         return text;
     }
 
+    // Getters so that data can't be externally modified but can still be read
+
     public String getToken() {
         return token;
     }
 
-    private boolean equals(String token) {
-        if (token != null && token.length() >= this.token.length()) {
-            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
-        }
-        return false;
-    }
-
     public int getArgumentCount() {
         return argumentCount;
+    }
+
+    public boolean isTrig() {
+        return isTrig;
     }
 
     public boolean takesAngle() {
@@ -128,10 +139,20 @@ public enum TrigFunction {
         return givesAngle;
     }
 
-    public static TrigFunction getByToken(String token) {
+    // Same as in Operator.java, maybe I should make an interface for this
+    // (it would make some other code cleaner too)
+
+    private boolean equals(String token) {
+        if (token != null && token.length() >= this.token.length()) {
+            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
+        }
+        return false;
+    }
+
+    public static MathFunction getByToken(String token) {
         // https://stackoverflow.com/questions/1128723/how-do-i-determine-whether-an-array-contains-a-particular-value-in-java
         // This might be faster than a for loop;
-        Optional<TrigFunction> function = Arrays.stream(values()).filter((v) -> v.equals(token)).findFirst();
+        Optional<MathFunction> function = Arrays.stream(values()).filter((v) -> v.equals(token)).findFirst();
         if (function.isPresent()) {
             return function.get();
         }

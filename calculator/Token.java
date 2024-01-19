@@ -24,13 +24,13 @@ public class Token<T> {
                 return new Token<Operator>(TokenType.OPERATOR, operator);
             }
 
-            TrigFunction function = TrigFunction.getByToken(token);
+            MathFunction function = MathFunction.getByToken(token);
             if (function != null) {
-                return new Token<TrigFunction>(TokenType.FUNCTION, function);
+                return new Token<MathFunction>(TokenType.FUNCTION, function);
             }
         }
 
-        return new Token<Object>(TokenType.UNKNOWN, null);
+        return new Token<Object>(TokenType.UNKNOWN, token);
     }
 
     public TokenType getType() {

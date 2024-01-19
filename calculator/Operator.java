@@ -6,13 +6,10 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public enum Operator {
-    // Precedence based on C:
-    // https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
-
     // Each operator has a lambda function to get its inputs, and another one to do
     // the operation
 
-    FACTORIAL("Factorial (!)", "!", 0, Associativity.LEFT, 1,
+    FACTORIAL("Factorial (!)", "!", 3, Associativity.LEFT, 1,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
                 return new Double[] {
@@ -27,18 +24,7 @@ public enum Operator {
                 }
                 return result;
             }),
-    // Should this be a function?
-    SQUARE_ROOT("Square root (sqrt)", "sqrt", 0, Associativity.RIGHT, 2,
-            (Scanner scanner) -> {
-                return new Double[] {
-                        Math.abs(Util.getValidDouble(scanner, "Enter the number: "))
-                };
-            },
-            (Double[] operands) -> {
-                assert (operands.length == 1);
-                return Math.sqrt(operands[0]);
-            }),
-    EXPONENT("Exponent (^)", "^", 0, Associativity.LEFT, 2,
+    EXPONENT("Exponent (^)", "^", 2, Associativity.LEFT, 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter the base: "),
@@ -78,7 +64,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return (double) ((long) (double) operands[0] % (long) (double) operands[1]);
             }),
-    ADD("Add (+)", "+", 2, Associativity.LEFT, 2,
+    ADD("Add (+)", "+", 0, Associativity.LEFT, 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -88,7 +74,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return operands[0] + operands[1];
             }),
-    SUBTRACT("Subtract (-)", "-", 2, Associativity.LEFT, 2,
+    SUBTRACT("Subtract (-)", "-", 0, Associativity.LEFT, 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -131,15 +117,10 @@ public enum Operator {
         return text;
     }
 
+    // Getters so that data can't be externally modified but can still be read
+
     public String getToken() {
         return token;
-    }
-
-    private boolean equals(String token) {
-        if (token != null && token.length() >= this.token.length()) {
-            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
-        }
-        return false;
     }
 
     public int getPrecedence() {
@@ -154,9 +135,20 @@ public enum Operator {
         return operandCount;
     }
 
+    // These are for looking up operators in the parser
+
+    // Check if a token starts with the operator
+    private boolean equals(String token) {
+        if (token != null && token.length() >= this.token.length()) {
+            return this.token.equalsIgnoreCase(token.substring(0, this.token.length()));
+        }
+        return false;
+    }
+
+    // Returns a matching operator or null if none is found
     public static Operator getByToken(String token) {
         // https://stackoverflow.com/questions/1128723/how-do-i-determine-whether-an-array-contains-a-particular-value-in-java
-        // This might be faster than a for loop;
+        // This is cleaner than a for loop, and a construct I frequently use in Rust (I just didn't know how to do it in Java)
         Optional<Operator> operator = Arrays.stream(values()).filter((v) -> v.equals(token)).findFirst();
         if (operator.isPresent()) {
             return operator.get();

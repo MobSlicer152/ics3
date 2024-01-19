@@ -2,7 +2,7 @@ package calculator;
 
 public enum MainMenuOptions {
     SINGLE_OPERATION("Single operation"),
-    TRIG_FUNCTION("Trigonometric function"),
+    FUNCTION("Function"),
     EXPRESSION("Mathematical expression"),
     REVERSE_POLISH("Reverse Polish notation"),
     TOGGLE_DEGREES("Set degrees or radians");

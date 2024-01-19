@@ -25,22 +25,25 @@ public class Calculator {
     }
 
     private static void doTrigFunction() {
-        TrigFunction function = Util.displayMenu(scanner, TrigFunction.class, 
-        " ---<[ TRIGONOMETRY ]>---\n" +
-        "--------------------------\n");
+        MathFunction function = Util.displayMenu(scanner, MathFunction.class, 
+        " ---<[ FUNCTIONS ]>---\n" +
+        "-----------------------\n");
         if (function == null) {
             return;
         }
 
-        // The implementations all work in radians
+        // Slightly faster and cleaner than evaluating this twice in the if statements
+        boolean convertDegrees = function.isTrig() && degreesMode == DegreesMode.DEGREES && function.givesAngle();
+
+        // The implementations all work in radians, so they need to be converted to and from
         Double[] arguments = function.getInputs(scanner);
-        if (degreesMode == DegreesMode.DEGREES && function.takesAngle()) {
+        if (convertDegrees) {
             for (int i = 0; i < arguments.length; i++) {
                 arguments[i] = Math.toRadians(arguments[i]);
             }
         }
         lastAnswer = function.execute(arguments);
-        if (degreesMode == DegreesMode.DEGREES && function.givesAngle()) {
+        if (convertDegrees) {
             lastAnswer = Math.toDegrees(lastAnswer);
         }
         lastOperation = function.toString();
@@ -90,7 +93,7 @@ public class Calculator {
             case MainMenuOptions.SINGLE_OPERATION:
                 doSingleOperation();
                 break;
-            case MainMenuOptions.TRIG_FUNCTION:
+            case MainMenuOptions.FUNCTION:
                 doTrigFunction();
                 break;
             case MainMenuOptions.EXPRESSION:
