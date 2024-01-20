@@ -24,7 +24,7 @@ public enum Operator {
                 }
                 return result;
             }),
-    EXPONENT("Exponent (^)", "^", 2, Associativity.LEFT, 2,
+    EXPONENT("Exponent (^)", "^", 2, Associativity.RIGHT, 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter the base: "),

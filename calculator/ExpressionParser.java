@@ -3,14 +3,15 @@ package calculator;
 import java.lang.Character;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Stack;
 
 public class ExpressionParser {
     // This code is far from perfect or optimal, but it seems to handle the cases I can think of.
     // Mainly, parentheses are handled weirdly, and there are better ways of identifying tokens.
     // Additionally, it works on some pretty complex test inputs from ChatGPT.
-    public static ArrayList<Token<?>> parse(String expression) {
+    public static ArrayList<Token<?>> parse(String expressionRaw) {
+        String expression = expressionRaw.stripLeading().stripTrailing();
+
         ArrayList<Token<?>> tokens = new ArrayList<>();
         for (int i = 0; i < expression.length(); i++) {
             // Skip whitespace
@@ -28,6 +29,7 @@ public class ExpressionParser {
             while (i < expression.length() && expression.charAt(i) == '(') {
                 tokens.add(new Token<Object>(TokenType.LEFT_PARENTHESIS, null));
                 i++;
+                tokenEnd++;
             }
 
             // Get right parentheses
@@ -53,7 +55,10 @@ public class ExpressionParser {
                 }
 
                 // Get the token string
-                String tokenStr = expression.substring(i, tokenEnd);
+                String tokenStr = expression.substring(i, tokenEnd).strip();
+                if (tokenStr.length() < 1) {
+                    continue;
+                }
 
                 // Add the real length of the token to i
                 Token<?> token = Token.interpret(tokenStr);
@@ -95,7 +100,6 @@ public class ExpressionParser {
         ArrayList<Token<?>> outputQueue = new ArrayList<>();
 
         for (Token<?> token : tokens) {
-            System.out.println(token);
             switch (token.getType()) {
             case TokenType.NUMBER:
                 outputQueue.add(token);
@@ -115,9 +119,11 @@ public class ExpressionParser {
                         (o1.getPrecedence() == o2.getPrecedence() &&
                              o1.getAssociativity() == Associativity.LEFT)) {
                         outputQueue.add(operatorStack.removeFirst());
+                    } else {
+                        break;
                     }
                 }
-                outputQueue.add(token);
+                operatorStack.push(token);
                 break;
             }
             case TokenType.RIGHT_PARENTHESIS:
@@ -144,8 +150,8 @@ public class ExpressionParser {
             }
         }
 
-        for (Token<?> token : operatorStack) {
-            if (token.getType() == TokenType.LEFT_PARENTHESIS) {
+        while (!operatorStack.isEmpty()) {
+            if (operatorStack.getFirst().getType() == TokenType.LEFT_PARENTHESIS) {
                 System.out.println("Mismatched parentheses (case 3)");
                 return null;
             }
@@ -154,7 +160,6 @@ public class ExpressionParser {
 
         String rpn = "";
         for (Token<?> token : outputQueue) {
-            System.out.println(token);
             rpn += String.format("%s ", token.getRpnString());
         }
 

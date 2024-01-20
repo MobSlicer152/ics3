@@ -16,19 +16,21 @@ public class Token<T> {
     public static Token<?> interpret(String token) {
         String strippedToken = token.strip();
 
-        try {
-            double value = Double.parseDouble(strippedToken);
-            return new Token<Double>(TokenType.NUMBER, value); // This line is only reached if no NumberFormatException is thrown, which means it's a number
-        } catch (NumberFormatException e) {
-            // Try everything, in order of most to least likely (that makes it a little faster)
-            Operator operator = Operator.getByToken(strippedToken);
-            if (operator != null) {
-                return new Token<Operator>(TokenType.OPERATOR, operator);
-            }
-
-            MathFunction function = MathFunction.getByToken(strippedToken);
-            if (function != null) {
-                return new Token<MathFunction>(TokenType.FUNCTION, function);
+        if (strippedToken.length() > 0) {
+            try {
+                double value = Double.parseDouble(strippedToken);
+                return new Token<Double>(TokenType.NUMBER, value); // This line is only reached if no NumberFormatException is thrown, which means it's a number
+            } catch (NumberFormatException e) {
+                // Try everything, in order of most to least likely (that makes it a little faster)
+                Operator operator = Operator.getByToken(strippedToken);
+                if (operator != null) {
+                    return new Token<Operator>(TokenType.OPERATOR, operator);
+                }
+            
+                MathFunction function = MathFunction.getByToken(strippedToken);
+                if (function != null) {
+                    return new Token<MathFunction>(TokenType.FUNCTION, function);
+                }
             }
         }
 
