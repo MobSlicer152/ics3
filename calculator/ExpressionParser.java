@@ -79,13 +79,13 @@ public class ExpressionParser {
                 Token<?> token = Token.interpret(tokenStr);
                 tokens.add(token);
                 switch (token.getType()) {
-                    case TokenType.NUMBER:
+                    case NUMBER:
                         i += tokenStr.length(); // It's already known to be the length of the number
                         break;
-                    case TokenType.OPERATOR:
+                    case OPERATOR:
                         i += ((Operator) token.getData()).getToken().length();
                         break;
-                    case TokenType.FUNCTION:
+                    case FUNCTION:
                         i += ((MathFunction) token.getData()).getToken().length();
                         break;
                     default:

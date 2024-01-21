@@ -95,16 +95,16 @@ public class Calculator {
             }
 
             switch (option) {
-            case MainMenuOptions.SINGLE_OPERATION:
+            case SINGLE_OPERATION:
                 doSingleOperation();
                 break;
-            case MainMenuOptions.FUNCTION:
+            case FUNCTION:
                 doTrigFunction();
                 break;
-            case MainMenuOptions.EXPRESSION:
+            case EXPRESSION:
                 doExpression();
                 break;
-            case MainMenuOptions.REVERSE_POLISH:
+            case REVERSE_POLISH:
                 doReversePolish();
                 break;
             }

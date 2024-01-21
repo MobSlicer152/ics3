@@ -17,14 +17,14 @@ public class ReversePolishNotation {
 
         for (Token<?> token : tokens) {
             switch (token.getType()) {
-                case TokenType.NUMBER:
+                case NUMBER:
                     outputQueue.add(token);
                     break;
-                case TokenType.FUNCTION:
-                case TokenType.LEFT_PARENTHESIS:
+                case FUNCTION:
+                case LEFT_PARENTHESIS:
                     operatorStack.push(token);
                     break;
-                case TokenType.OPERATOR: {
+                case OPERATOR: {
                     Operator o1 = (Operator) token.getData();
                     while (!operatorStack.isEmpty() && operatorStack.peek().getType() == TokenType.OPERATOR) {
                         Operator o2 = (Operator) operatorStack.peek().getData();
@@ -39,7 +39,7 @@ public class ReversePolishNotation {
                     operatorStack.push(token);
                     break;
                 }
-                case TokenType.RIGHT_PARENTHESIS:
+                case RIGHT_PARENTHESIS:
                     while (operatorStack.peek().getType() != TokenType.LEFT_PARENTHESIS) {
                         if (operatorStack.isEmpty()) {
                             System.out.println("Mismatched parentheses (case 1)");
@@ -56,7 +56,7 @@ public class ReversePolishNotation {
                         outputQueue.add(operatorStack.pop());
                     }
                     break;
-                case TokenType.UNKNOWN:
+                case UNKNOWN:
                 default:
                     System.out.println("Ignoring unknown token");
                     break;
@@ -79,13 +79,13 @@ public class ReversePolishNotation {
         for (Token<?> token : tokens) {
             switch (token.getType()) {
                 // Push numbers to the stack
-                case TokenType.NUMBER:
+                case NUMBER:
                     // NUMBER tokens always have Double as their type parameter
                     stack.push((Double) token.getData());
                     break;
                 // Execute functions on however many arguments they take (rejecting the
                 // expression if there aren't enough)
-                case TokenType.FUNCTION: {
+                case FUNCTION: {
                     MathFunction function = (MathFunction) token.getData();
                     if (stack.size() < function.getArgumentCount()) {
                         System.out.printf("Invalid use of %s (expected %d arguments, got %d), cannot continue\n",
@@ -101,7 +101,7 @@ public class ReversePolishNotation {
                     break;
                 }
                 // Do the same with operators
-                case TokenType.OPERATOR: {
+                case OPERATOR: {
                     Operator operator = (Operator) token.getData();
                     if (stack.size() < operator.getOperandCount()) {
                         System.out.printf("Invalid use of %s (expected %d arguments, got %d), cannot continue\n",
