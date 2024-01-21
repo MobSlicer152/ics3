@@ -53,7 +53,7 @@ public class Calculator {
         System.out.print(
             " ---<[ EXPRESSION ]>---\n" +
             "Parentheses and all operators and functions supported.\n" +
-            "The parser works better when spaces are used\n" +
+            //"The parser works better when spaces are used\n" +
             "------------------------\n" +
             "Enter an expression:\n");
         String expression = scanner.nextLine();
@@ -65,7 +65,7 @@ public class Calculator {
         System.out.print(
             " ---<[ RPN ]>---\n" +
             "All operators and functions supported.\n" +
-            "The parser works better when spaces are used\n" +
+            //"The parser works better when spaces are used\n" +
             "-----------------\n" +
             "Enter an expression in reverse Polish notation:\n");
         String expression = scanner.nextLine();

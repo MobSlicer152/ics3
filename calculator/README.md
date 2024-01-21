@@ -5,7 +5,7 @@ The program is made of these classes:
 - [`Calculator`](Calculator.java): This is the driver and main class of the program, it handles the menu loop
 - [`Associativity`](Associativity.java): This is an enum that represents the associativities that operators can have (not fully used)
 - [`DegreesMode`](DegreesMode.java): This is an enum for whether the calculator uses degrees or radians
-- [`ExpressionParser`](ExpressionParser.java): This class implements a crude (but functional) parser which converts a string into
+- [`ExpressionParser`](ExpressionParser.java): This class implements a parser which converts a string into
   tokens which can be evaluated
 - [`MainMenuOptions`](MainMenuOptions.java): This enum has the options for the main menu of the calculator
 - [`MathFunction`](MathFunction.java): This enum contains mathematical functions, such as trigonometry and square roots

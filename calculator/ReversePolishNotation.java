@@ -1,7 +1,5 @@
 package calculator;
 
-import java.lang.Double;
-
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -11,11 +9,11 @@ public class ReversePolishNotation {
     // It doesn't reject all invalid expressions, but it can detect
     // mismatched parentheses and should work fine
     // https://en.wikipedia.org/wiki/Shunting_yard_algorithm#The_algorithm_in_detail
-    public static ArrayList<Token<?>> makeRpn(ArrayList<Token<?>> tokens) {
-        Stack<Token<?>> operatorStack = new Stack<>();
-        ArrayList<Token<?>> outputQueue = new ArrayList<>();
+    public static ArrayList<Token> makeRpn(ArrayList<Token> tokens) {
+        Stack<Token> operatorStack = new Stack<>();
+        ArrayList<Token> outputQueue = new ArrayList<>();
 
-        for (Token<?> token : tokens) {
+        for (Token token : tokens) {
             switch (token.getType()) {
                 case NUMBER:
                     outputQueue.add(token);
@@ -56,9 +54,7 @@ public class ReversePolishNotation {
                         outputQueue.add(operatorStack.pop());
                     }
                     break;
-                case UNKNOWN:
-                default:
-                    System.out.println("Ignoring unknown token");
+                case EOF:
                     break;
             }
         }
@@ -74,9 +70,9 @@ public class ReversePolishNotation {
         return outputQueue;
     }
 
-    public static double evaluate(ArrayList<Token<?>> tokens) {
+    public static double evaluate(ArrayList<Token> tokens) {
         Stack<Double> stack = new Stack<>();
-        for (Token<?> token : tokens) {
+        for (Token token : tokens) {
             switch (token.getType()) {
                 // Push numbers to the stack
                 case NUMBER:

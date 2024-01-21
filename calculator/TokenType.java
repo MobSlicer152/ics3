@@ -6,5 +6,5 @@ public enum TokenType {
     OPERATOR,
     LEFT_PARENTHESIS,
     RIGHT_PARENTHESIS,
-    UNKNOWN;
+    EOF;
 }

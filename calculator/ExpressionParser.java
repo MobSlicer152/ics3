@@ -1,115 +1,94 @@
 package calculator;
 
-import java.lang.Character;
-
 import java.util.ArrayList;
 
+// Based on https://craftinginterpreters.com/scanning.html,
+// but stripped down to support just mathematical expressions
 public class ExpressionParser {
-    private static boolean isNumberRelated(char c) {
-        return c == '-' || Character.isDigit(c) || c == '.';
+    String source;
+    ArrayList<Token> tokens;
+    int start;
+    int current;
+
+    private char advance() {
+        return source.charAt(current++);
     }
 
-    // This code is far from perfect or optimal, but it seems to handle the cases I
-    // can think of.
-    // Mainly, parentheses are handled weirdly, and there are better ways of
-    // identifying tokens.
-    // Additionally, it works on some pretty complex test inputs from ChatGPT.
-    public static ArrayList<Token<?>> parse(String expressionRaw) {
-        String expression = expressionRaw.stripLeading().stripTrailing();
+    private char peek() {
+        return peek(1);
+    }
 
-        ArrayList<Token<?>> tokens = new ArrayList<>();
-        for (int i = 0; i < expression.length(); i++) {
-            // Skip whitespace
-            while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
-                i++;
-            }
+    private char peek(int n) {
+        if (current + n >= source.length()) {
+            return '\0';
+        }
+        return source.charAt(current + n);
+    }
 
-            // Get the next whitespace
-            int tokenEnd = i;
-            while (tokenEnd < expression.length() && !Character.isWhitespace(expression.charAt(tokenEnd))) {
-                tokenEnd++;
-            }
+    private void number() {
+        while (Character.isDigit(peek())) {
+            advance();
+        }
 
-            // Get left parentheses
-            while (i < expression.length() && expression.charAt(i) == '(') {
-                tokens.add(new Token<Object>(TokenType.LEFT_PARENTHESIS, null));
-                i++;
-                tokenEnd++;
-            }
-
-            // Get right parentheses
-            while (i < expression.length() && expression.charAt(i) == ')') {
-                tokens.add(new Token<Object>(TokenType.RIGHT_PARENTHESIS, null));
-                i++;
-                tokenEnd--;
-            }
-
-            if (i < expression.length()) {
-                // Don't go out of bounds
-                if (tokenEnd > expression.length()) {
-                    tokenEnd = expression.length();
-                }
-
-                // Skip right parentheses (but they get added earlier in the loop in the next
-                // iteration)
-                while (expression.charAt(tokenEnd - 1) == ')') {
-                    tokenEnd--;
-                }
-
-                if (i >= tokenEnd) {
-                    i = tokenEnd - 1;
-                }
-
-                // Get the token string
-                String tokenStr = expression.substring(i, tokenEnd).strip();
-                if (tokenStr.length() < 1) {
-                    continue;
-                }
-
-                // Figure it out if there's no spaces
-                if (isNumberRelated(tokenStr.charAt(0))) {
-                    int j;
-                    for (j = 0; j < tokenStr.length() && isNumberRelated(tokenStr.charAt(j)); j++) {
-                        // Nothing to be done in the body
-                    }
-                    tokenStr = tokenStr.substring(0, j);
-                }
-
-                // Add the real length of the token to i
-                Token<?> token = Token.interpret(tokenStr);
-                tokens.add(token);
-                switch (token.getType()) {
-                    case NUMBER:
-                        i += tokenStr.length(); // It's already known to be the length of the number
-                        break;
-                    case OPERATOR:
-                        i += ((Operator) token.getData()).getToken().length();
-                        break;
-                    case FUNCTION:
-                        i += ((MathFunction) token.getData()).getToken().length();
-                        break;
-                    default:
-                        i += tokenStr.length();
-                        break;
-                }
-
-                // The index of the character after the end is 1 less than the token length
-                tokenEnd = --i;
-
-                if (tokenEnd >= expression.length() - 1) {
-                    break;
-                }
+        if (peek() == '.' && Character.isDigit(peek(1))) {
+            advance();
+            while (Character.isDigit(peek())) {
+                advance();
             }
         }
 
+        tokens.add(new Token(TokenType.NUMBER, Double.parseDouble(source.substring(start, current))));
+    }
+
+    public ExpressionParser(String source) {
+        this.tokens = new ArrayList<>();
+        this.source = source;
+    }
+
+    public ArrayList<Token> parse() {
+        start = 0;
+        current = 0;
+        while (current < source.length()) {
+            start = current;
+            char c = advance();
+            switch (c) {
+                // Single character operators and parentheses
+                case '(': tokens.add(new Token(TokenType.LEFT_PARENTHESIS, null)); break;
+                case ')': tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, null)); break;
+                case '-': tokens.add(new Token(TokenType.OPERATOR, Operator.SUBTRACT)); break;
+                case '+': tokens.add(new Token(TokenType.OPERATOR, Operator.ADD)); break;
+                case '*': tokens.add(new Token(TokenType.OPERATOR, Operator.MULTIPLY)); break;
+                case '/': tokens.add(new Token(TokenType.OPERATOR, Operator.DIVIDE)); break;
+                case '%': tokens.add(new Token(TokenType.OPERATOR, Operator.MODULO)); break;
+                case '^': tokens.add(new Token(TokenType.OPERATOR, Operator.EXPONENT)); break;
+                case '!': tokens.add(new Token(TokenType.OPERATOR, Operator.FACTORIAL)); break;
+
+                // Ignore whitespace
+                case ' ':
+                case '\t':
+                case '\r':
+                    break;
+
+                default:
+                    if (Character.isDigit(c)) {
+                        number();
+                    } else {
+                        System.out.printf("Unexpected character '%c'\n", c);
+                        current = Integer.MAX_VALUE;
+                    }
+                    break;
+            }
+        }
+
+        tokens.add(new Token(TokenType.EOF, null));
         return tokens;
     }
 
     public static double parseAndEvaluate(String expression) {
-        return ReversePolishNotation.evaluate(ReversePolishNotation.makeRpn(parse(expression)));
+        return ReversePolishNotation.evaluate(ReversePolishNotation.makeRpn((new ExpressionParser(expression)).parse()));
     }
 
     public static double parseAndEvaluateReversePolish(String expression) {
-        return ReversePolishNotation.evaluate(parse(expression));
+        return ReversePolishNotation.evaluate((new ExpressionParser(expression)).parse());
     }
 }
