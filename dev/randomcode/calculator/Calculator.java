@@ -56,8 +56,11 @@ public class Calculator {
             //"The parser works better when spaces are used\n" +
             "------------------------\n" +
             "Enter an expression:\n");
-        String expression = scanner.nextLine();
-        lastOperation = expression;
+        String input = scanner.nextLine();
+        Expression expression = TokenScanner.scanAndParse(input);
+        System.out.printf("Expression %s produces AST %s", input, (new AstPrinter()).print(expression));
+        lastAnswer = (new Evaluator()).evaluate(expression);
+        lastOperation = input;
     }
 
     private static void doReversePolish() {
@@ -107,7 +110,7 @@ public class Calculator {
                 doExpression();
                 break;
             case REVERSE_POLISH:
-                doReversePolish();
+                //doReversePolish();
                 break;
             }
         }

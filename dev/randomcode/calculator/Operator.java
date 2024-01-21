@@ -8,7 +8,7 @@ import java.util.Scanner;
 public enum Operator {
     // Each operator has a lambda function to get its inputs, and another one to do
     // the operation
-    EXPONENT("Exponent (^)", "^", 2, Associativity.RIGHT, 2,
+    EXPONENT("Exponent (^)", "^", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter the base: "),
@@ -18,7 +18,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return Math.pow(operands[0], operands[1]);
             }),
-    MULTIPLY("Multiply (*)", "*", 1, Associativity.LEFT, 2,
+    MULTIPLY("Multiply (*)", "*", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -28,7 +28,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return operands[0] * operands[1];
             }),
-    DIVIDE("Divide (/)", "/", 1, Associativity.LEFT, 2,
+    DIVIDE("Divide (/)", "/", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -38,7 +38,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return operands[0] / operands[1];
             }),
-    MODULO("Modulo (%)", "%", 1, Associativity.LEFT, 2,
+    MODULO("Modulo (%)", "%", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -48,7 +48,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return (double) ((long) (double) operands[0] % (long) (double) operands[1]);
             }),
-    ADD("Add (+)", "+", 0, Associativity.LEFT, 2,
+    ADD("Add (+)", "+", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -58,7 +58,7 @@ public enum Operator {
             (Double[] operands) -> {
                 return operands[0] + operands[1];
             }),
-    SUBTRACT("Subtract (-)", "-", 0, Associativity.LEFT, 2,
+    SUBTRACT("Subtract (-)", "-", 2,
             (Scanner scanner) -> {
                 return new Double[] {
                         Util.getValidDouble(scanner, "Enter a: "),
@@ -71,18 +71,14 @@ public enum Operator {
 
     private String text;
     private String token;
-    private int precedence;
-    private Associativity associativity;
     private int operandCount;
     private Function<Scanner, Double[]> getInputsFunction;
     private Function<Double[], Double> executeFunction;
 
-    private Operator(String text, String token, int precedence, Associativity associativity, int operandCount,
+    private Operator(String text, String token, int operandCount,
             Function<Scanner, Double[]> getInputsFunction, Function<Double[], Double> executeFunction) {
         this.text = text;
         this.token = token;
-        this.precedence = precedence;
-        this.associativity = associativity;
         this.operandCount = operandCount;
         this.getInputsFunction = getInputsFunction;
         this.executeFunction = executeFunction;
@@ -105,14 +101,6 @@ public enum Operator {
 
     public String getToken() {
         return token;
-    }
-
-    public int getPrecedence() {
-        return precedence;
-    }
-
-    public Associativity getAssociativity() {
-        return associativity;
     }
 
     public int getOperandCount() {

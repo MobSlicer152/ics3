@@ -5,8 +5,8 @@ import java.util.ArrayList;
 // Based on https://craftinginterpreters.com/scanning.html,
 // but stripped down to support just mathematical expressions
 public class TokenScanner {
-    String source;
-    ArrayList<Token> tokens;
+    final String source;
+    final ArrayList<Token> tokens;
     int start;
     int current;
 
@@ -66,28 +66,28 @@ public class TokenScanner {
             switch (c) {
                 // Single character operators and parentheses
                 case '(':
-                    tokens.add(new Token(TokenType.LEFT_PARENTHESIS, null));
+                    tokens.add(Token.LEFT_PARENTHESIS);
                     break;
                 case ')':
-                    tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, null));
+                    tokens.add(Token.RIGHT_PARENTHESIS);
                     break;
                 case '-':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.SUBTRACT));
+                    tokens.add(Token.SUBTRACT);
                     break;
                 case '+':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.ADD));
+                    tokens.add(Token.ADD);
                     break;
                 case '*':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.MULTIPLY));
+                    tokens.add(Token.MULTIPLY);
                     break;
                 case '/':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.DIVIDE));
+                    tokens.add(Token.DIVIDE);
                     break;
                 case '%':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.MODULO));
+                    tokens.add(Token.MODULO);
                     break;
                 case '^':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.EXPONENT));
+                    tokens.add(Token.EXPONENT);
                     break;
 
                 // Ignore whitespace
@@ -111,5 +111,16 @@ public class TokenScanner {
 
         tokens.add(new Token(TokenType.EOF, null));
         return tokens;
+    }
+
+    public static Expression scanAndParse(String source) {
+        return new Parser(
+            new TokenScanner(source)
+                .scanTokens()
+        ).parse();
+    }
+
+    public static double scanParseAndEvaluate(String source) {
+        return new Evaluator().evaluate(scanAndParse(source));
     }
 }

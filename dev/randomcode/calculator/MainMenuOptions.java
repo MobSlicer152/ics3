@@ -3,7 +3,7 @@ package dev.randomcode.calculator;
 public enum MainMenuOptions {
     SINGLE_OPERATION("Single operation"),
     FUNCTION("Function"),
-    EXPRESSION("Mathematical expression"),
+    EXPRESSION("Mathematical expression (infix notation)"),
     REVERSE_POLISH("Reverse Polish notation"),
     TOGGLE_DEGREES("Set degrees or radians");
 

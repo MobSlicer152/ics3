@@ -71,7 +71,7 @@ public class Util {
         System.out.printf("0. Leave\n");
 
         System.out.println();
-        i = Util.getIntInRange(scanner, "Choose", 0, enumClass.getEnumConstants().length, true);
+        i = Util.getIntInRange(scanner, "Enter the number of the option you want", 0, enumClass.getEnumConstants().length, true);
 
         // Get the value
         if (i == 0) {
