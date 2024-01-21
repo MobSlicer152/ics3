@@ -6,6 +6,10 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public enum MathFunction {
+    // Note: I tried implementing these myself, but I couldn't understand any of the
+    // accurate approximations for the inverse functions, and I don't think I can
+    // explain fast inverse square root (which is the only approximation that I
+    // could use for square roots that I know about and could implement).
     SINE("Sine (sin)", "sin", 1, true, true, false,
             (Scanner scanner) -> {
                 // Construct an array with the inputs
