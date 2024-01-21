@@ -1,4 +1,4 @@
-package calculator;
+package dev.randomcode.calculator;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -76,15 +76,31 @@ public enum MathFunction {
                 assert (arguments.length == 1);
                 return Math.atan(arguments[0]);
             }),
+    // These two are here for ease of both inputting and parsing them
     SQUARE_ROOT("Square root (sqrt)", "sqrt", 1, false, false, false,
             (Scanner scanner) -> {
                 return new Double[] {
                         Math.abs(Util.getValidDouble(scanner, "Enter the number: "))
                 };
             },
-            (Double[] operands) -> {
-                assert (operands.length == 1);
-                return Math.sqrt(operands[0]);
+            (Double[] arguments) -> {
+                assert (arguments.length == 1);
+                return Math.sqrt(arguments[0]);
+            }),
+    FACTORIAL("Factorial (fac)", "fac", 1, false, false, false,
+            (Scanner scanner) -> {
+                // Construct an array with the inputs
+                return new Double[] {
+                        Math.abs(Util.getValidDouble(scanner, "Enter the number: "))
+                };
+            },
+            (Double[] arguments) -> {
+                assert (arguments.length == 1);
+                double result = 1;
+                for (long i = (long) (double) arguments[0]; i > 0; i--) {
+                    result *= i;
+                }
+                return result;
             });
 
     private String text;

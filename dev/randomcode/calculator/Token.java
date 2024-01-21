@@ -1,4 +1,4 @@
-package calculator;
+package dev.randomcode.calculator;
 
 import java.lang.Double;
 

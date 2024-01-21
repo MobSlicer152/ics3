@@ -1,10 +1,10 @@
-package calculator;
+package dev.randomcode.calculator;
 
 import java.util.ArrayList;
 
 // Based on https://craftinginterpreters.com/scanning.html,
 // but stripped down to support just mathematical expressions
-public class ExpressionParser {
+public class TokenScanner {
     String source;
     ArrayList<Token> tokens;
     int start;
@@ -52,12 +52,12 @@ public class ExpressionParser {
         tokens.add(new Token(TokenType.FUNCTION, MathFunction.getByToken(source.substring(start, current))));
     }
 
-    public ExpressionParser(String source) {
+    public TokenScanner(String source) {
         this.tokens = new ArrayList<>();
         this.source = source;
     }
 
-    public ArrayList<Token> parse() {
+    public ArrayList<Token> scanTokens() {
         start = 0;
         current = 0;
         while (current < source.length()) {
@@ -89,9 +89,6 @@ public class ExpressionParser {
                 case '^':
                     tokens.add(new Token(TokenType.OPERATOR, Operator.EXPONENT));
                     break;
-                case '!':
-                    tokens.add(new Token(TokenType.OPERATOR, Operator.FACTORIAL));
-                    break;
 
                 // Ignore whitespace
                 case ' ':
@@ -114,14 +111,5 @@ public class ExpressionParser {
 
         tokens.add(new Token(TokenType.EOF, null));
         return tokens;
-    }
-
-    public static double parseAndEvaluate(String expression) {
-        return ReversePolishNotation
-                .evaluate(ReversePolishNotation.makeRpn((new ExpressionParser(expression)).parse()));
-    }
-
-    public static double parseAndEvaluateReversePolish(String expression) {
-        return ReversePolishNotation.evaluate((new ExpressionParser(expression)).parse());
     }
 }

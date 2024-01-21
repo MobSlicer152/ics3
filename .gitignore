@@ -9,3 +9,5 @@
 *.ilk
 *.exp
 *.jar
+
+*/ast

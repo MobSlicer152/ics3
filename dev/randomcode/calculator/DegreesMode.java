@@ -1,4 +1,4 @@
-package calculator;
+package dev.randomcode.calculator;
 
 public enum DegreesMode {
     DEGREES("Degrees"),

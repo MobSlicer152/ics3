@@ -1,4 +1,4 @@
-package calculator;
+package dev.randomcode.calculator;
 
 import java.lang.System;
 import java.util.Arrays;
@@ -57,7 +57,6 @@ public class Calculator {
             "------------------------\n" +
             "Enter an expression:\n");
         String expression = scanner.nextLine();
-        lastAnswer = ExpressionParser.parseAndEvaluate(expression);
         lastOperation = expression;
     }
 
@@ -69,7 +68,6 @@ public class Calculator {
             "-----------------\n" +
             "Enter an expression in reverse Polish notation:\n");
         String expression = scanner.nextLine();
-        lastAnswer = ExpressionParser.parseAndEvaluateReversePolish(expression);
         lastOperation = expression;
     }
 
@@ -115,5 +113,6 @@ public class Calculator {
         }
 
         System.out.printf("Goodbye. The last answer was %f, to %s.\n", lastAnswer, lastOperation);
+        scanner.close();
     }
 }

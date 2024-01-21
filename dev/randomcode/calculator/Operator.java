@@ -1,4 +1,4 @@
-package calculator;
+package dev.randomcode.calculator;
 
 import java.util.function.Function;
 import java.util.Arrays;
@@ -8,22 +8,6 @@ import java.util.Scanner;
 public enum Operator {
     // Each operator has a lambda function to get its inputs, and another one to do
     // the operation
-
-    FACTORIAL("Factorial (!)", "!", 3, Associativity.LEFT, 1,
-            (Scanner scanner) -> {
-                // Construct an array with the inputs
-                return new Double[] {
-                        Math.abs(Util.getValidDouble(scanner, "Enter the number: "))
-                };
-            },
-            (Double[] operands) -> {
-                assert (operands.length == 1);
-                double result = 1;
-                for (long i = (long) (double) operands[0]; i > 0; i--) {
-                    result *= i;
-                }
-                return result;
-            }),
     EXPONENT("Exponent (^)", "^", 2, Associativity.RIGHT, 2,
             (Scanner scanner) -> {
                 return new Double[] {
