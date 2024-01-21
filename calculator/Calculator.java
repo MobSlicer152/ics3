@@ -55,13 +55,18 @@ public class Calculator {
             "------------------------\n" +
             "Enter an expression (parentheses and all other operators/functions supported):\n");
         String expression = scanner.nextLine();
-        ExpressionParser.parseAndEvaluate(expression);
-
+        lastAnswer = ExpressionParser.parseAndEvaluate(expression);
         lastOperation = expression;
     }
 
     private static void doReversePolish() {
-
+        System.out.print(
+            " ---<[ RPN ]>---\n" +
+            "-----------------\n" +
+            "Enter an expression in reverse Polish notation (all operators/functions supported):\n");
+        String expression = scanner.nextLine();
+        lastAnswer = ExpressionParser.parseAndEvaluateReversePolish(expression);
+        lastOperation = expression;
     }
 
     public static void main(String[] args) {

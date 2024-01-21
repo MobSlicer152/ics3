@@ -3,7 +3,6 @@ package calculator;
 import java.lang.Character;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class ExpressionParser {
     // This code is far from perfect or optimal, but it seems to handle the cases I can think of.
@@ -91,83 +90,11 @@ public class ExpressionParser {
         return tokens;
     }
 
-    // Shunting yard algorithm to get Reverse Polish Notation
-    // It doesn't reject all invalid expressions, but it can detect
-    // mismatched parentheses and should work fine
-    // https://en.wikipedia.org/wiki/Shunting_yard_algorithm#The_algorithm_in_detail
-    public static String makeRpn(ArrayList<Token<?>> tokens) {
-        Stack<Token<?>> operatorStack = new Stack<>();
-        ArrayList<Token<?>> outputQueue = new ArrayList<>();
-
-        for (Token<?> token : tokens) {
-            switch (token.getType()) {
-            case TokenType.NUMBER:
-                outputQueue.add(token);
-                break;
-            case TokenType.FUNCTION:
-            case TokenType.LEFT_PARENTHESIS:
-                operatorStack.push(token);
-                break;
-            case TokenType.OPERATOR: {
-                Operator o1 = (Operator)token.getData();
-                // I think the description includes right parentheses as
-                // operators, but they have the lowest precedence (I think),
-                // so they don't come up in this condition anyway
-                while (!operatorStack.isEmpty() && operatorStack.getFirst().getType() == TokenType.OPERATOR) {
-                    Operator o2 = (Operator)operatorStack.getFirst().getData();
-                    if (o2.getPrecedence() > o1.getPrecedence() ||
-                        (o1.getPrecedence() == o2.getPrecedence() &&
-                             o1.getAssociativity() == Associativity.LEFT)) {
-                        outputQueue.add(operatorStack.removeFirst());
-                    } else {
-                        break;
-                    }
-                }
-                operatorStack.push(token);
-                break;
-            }
-            case TokenType.RIGHT_PARENTHESIS:
-                while (operatorStack.getFirst().getType() != TokenType.LEFT_PARENTHESIS) {
-                    if (operatorStack.isEmpty()) {
-                        System.out.println("Mismatched parentheses (case 1)");
-                        return null;
-                    }
-                    outputQueue.add(operatorStack.removeFirst());
-                }
-                if (operatorStack.getFirst().getType() != TokenType.LEFT_PARENTHESIS) {
-                    System.out.println("Mismatched parentheses (case 2)");
-                    return null;
-                }
-                operatorStack.removeFirst();
-                if (!operatorStack.isEmpty() && operatorStack.getFirst().getType() == TokenType.FUNCTION) {
-                    outputQueue.add(operatorStack.removeFirst());
-                }
-                break;
-            case TokenType.UNKNOWN:
-            default:
-                System.out.println("Ignoring unknown token");
-                break;
-            }
-        }
-
-        while (!operatorStack.isEmpty()) {
-            if (operatorStack.getFirst().getType() == TokenType.LEFT_PARENTHESIS) {
-                System.out.println("Mismatched parentheses (case 3)");
-                return null;
-            }
-            outputQueue.add(operatorStack.removeFirst());
-        }
-
-        String rpn = "";
-        for (Token<?> token : outputQueue) {
-            rpn += String.format("%s ", token.getRpnString());
-        }
-
-        System.out.println(rpn);
-        return rpn;
+    public static double parseAndEvaluate(String expression) {
+        return ReversePolishNotation.evaluate(ReversePolishNotation.makeRpn(parse(expression)));
     }
 
-    public static double parseAndEvaluate(String expression) {
-        return ReversePolishParser.evaluate(makeRpn(parse(expression)));
+    public static double parseAndEvaluateReversePolish(String expression) {
+        return ReversePolishNotation.evaluate(parse(expression));
     }
 }
