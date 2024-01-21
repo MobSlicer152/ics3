@@ -15,7 +15,7 @@ public class ExpressionParser {
     }
 
     private char peek() {
-        return peek(1);
+        return peek(0);
     }
 
     private char peek(int n) {
@@ -25,19 +25,31 @@ public class ExpressionParser {
         return source.charAt(current + n);
     }
 
+    private boolean isDigit(char c) {
+        return '0' <= c && c <= '9';
+    }
+
     private void number() {
-        while (Character.isDigit(peek())) {
+        while (isDigit(peek())) {
             advance();
         }
 
-        if (peek() == '.' && Character.isDigit(peek(1))) {
+        if (peek() == '.' && isDigit(peek(1))) {
             advance();
-            while (Character.isDigit(peek())) {
+            while (isDigit(peek())) {
                 advance();
             }
         }
 
         tokens.add(new Token(TokenType.NUMBER, Double.parseDouble(source.substring(start, current))));
+    }
+
+    private void function() {
+        while (Character.isAlphabetic(peek()) || isDigit(peek())) {
+            advance();
+        }
+
+        tokens.add(new Token(TokenType.FUNCTION, MathFunction.getByToken(source.substring(start, current))));
     }
 
     public ExpressionParser(String source) {
@@ -53,15 +65,33 @@ public class ExpressionParser {
             char c = advance();
             switch (c) {
                 // Single character operators and parentheses
-                case '(': tokens.add(new Token(TokenType.LEFT_PARENTHESIS, null)); break;
-                case ')': tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, null)); break;
-                case '-': tokens.add(new Token(TokenType.OPERATOR, Operator.SUBTRACT)); break;
-                case '+': tokens.add(new Token(TokenType.OPERATOR, Operator.ADD)); break;
-                case '*': tokens.add(new Token(TokenType.OPERATOR, Operator.MULTIPLY)); break;
-                case '/': tokens.add(new Token(TokenType.OPERATOR, Operator.DIVIDE)); break;
-                case '%': tokens.add(new Token(TokenType.OPERATOR, Operator.MODULO)); break;
-                case '^': tokens.add(new Token(TokenType.OPERATOR, Operator.EXPONENT)); break;
-                case '!': tokens.add(new Token(TokenType.OPERATOR, Operator.FACTORIAL)); break;
+                case '(':
+                    tokens.add(new Token(TokenType.LEFT_PARENTHESIS, null));
+                    break;
+                case ')':
+                    tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, null));
+                    break;
+                case '-':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.SUBTRACT));
+                    break;
+                case '+':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.ADD));
+                    break;
+                case '*':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.MULTIPLY));
+                    break;
+                case '/':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.DIVIDE));
+                    break;
+                case '%':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.MODULO));
+                    break;
+                case '^':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.EXPONENT));
+                    break;
+                case '!':
+                    tokens.add(new Token(TokenType.OPERATOR, Operator.FACTORIAL));
+                    break;
 
                 // Ignore whitespace
                 case ' ':
@@ -70,8 +100,10 @@ public class ExpressionParser {
                     break;
 
                 default:
-                    if (Character.isDigit(c)) {
+                    if (isDigit(c)) {
                         number();
+                    } else if (Character.isAlphabetic(c)) {
+                        function();
                     } else {
                         System.out.printf("Unexpected character '%c'\n", c);
                         current = Integer.MAX_VALUE;
@@ -85,7 +117,8 @@ public class ExpressionParser {
     }
 
     public static double parseAndEvaluate(String expression) {
-        return ReversePolishNotation.evaluate(ReversePolishNotation.makeRpn((new ExpressionParser(expression)).parse()));
+        return ReversePolishNotation
+                .evaluate(ReversePolishNotation.makeRpn((new ExpressionParser(expression)).parse()));
     }
 
     public static double parseAndEvaluateReversePolish(String expression) {

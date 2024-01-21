@@ -86,7 +86,7 @@ public class ReversePolishNotation {
                     if (stack.size() < function.getArgumentCount()) {
                         System.out.printf("Invalid use of %s (expected %d arguments, got %d), cannot continue\n",
                                 function, function.getArgumentCount(), stack.size());
-                        break;
+                        return Double.NaN;
                     }
                     Double[] arguments = new Double[function.getArgumentCount()];
                     // Keep elements in the right order
@@ -102,7 +102,7 @@ public class ReversePolishNotation {
                     if (stack.size() < operator.getOperandCount()) {
                         System.out.printf("Invalid use of %s (expected %d arguments, got %d), cannot continue\n",
                                 operator, operator.getOperandCount(), stack.size());
-                        break;
+                        return Double.NaN;
                     }
                     Double[] arguments = new Double[operator.getOperandCount()];
                     // Keep elements in the right order
