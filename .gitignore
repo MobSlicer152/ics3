@@ -1,5 +1,5 @@
 /.vs
-/out
+*/out
 
 *.obj
 *.o
@@ -8,3 +8,4 @@
 *.pdb
 *.ilk
 *.exp
+*.jar

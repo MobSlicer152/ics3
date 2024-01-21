@@ -82,7 +82,6 @@ public class ReversePolishNotation {
                 case TokenType.NUMBER:
                     // NUMBER tokens always have Double as their type parameter
                     stack.push((Double) token.getData());
-                    System.out.printf("Pushed %s\n", stack.peek());
                     break;
                 // Execute functions on however many arguments they take (rejecting the
                 // expression if there aren't enough)
@@ -123,7 +122,12 @@ public class ReversePolishNotation {
             }
         }
 
-        // For correct expressions only one number should be left on the stack, right?
+        // For correct expressions only one number should be left on the stack, so
+        // it at least can't be empty
+        if (stack.isEmpty()) {
+            return Double.NaN;
+        }
+
         return stack.pop();
     }
 }

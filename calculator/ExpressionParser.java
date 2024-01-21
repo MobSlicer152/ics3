@@ -5,8 +5,14 @@ import java.lang.Character;
 import java.util.ArrayList;
 
 public class ExpressionParser {
-    // This code is far from perfect or optimal, but it seems to handle the cases I can think of.
-    // Mainly, parentheses are handled weirdly, and there are better ways of identifying tokens.
+    private static boolean isNumberRelated(char c) {
+        return c == '-' || Character.isDigit(c) || c == '.';
+    }
+
+    // This code is far from perfect or optimal, but it seems to handle the cases I
+    // can think of.
+    // Mainly, parentheses are handled weirdly, and there are better ways of
+    // identifying tokens.
     // Additionally, it works on some pretty complex test inputs from ChatGPT.
     public static ArrayList<Token<?>> parse(String expressionRaw) {
         String expression = expressionRaw.stripLeading().stripTrailing();
@@ -44,7 +50,8 @@ public class ExpressionParser {
                     tokenEnd = expression.length();
                 }
 
-                // Skip right parentheses (but they get added earlier in the loop in the next iteration)
+                // Skip right parentheses (but they get added earlier in the loop in the next
+                // iteration)
                 while (expression.charAt(tokenEnd - 1) == ')') {
                     tokenEnd--;
                 }
@@ -59,27 +66,35 @@ public class ExpressionParser {
                     continue;
                 }
 
+                // Figure it out if there's no spaces
+                if (isNumberRelated(tokenStr.charAt(0))) {
+                    int j;
+                    for (j = 0; j < tokenStr.length() && isNumberRelated(tokenStr.charAt(j)); j++) {
+                        // Nothing to be done in the body
+                    }
+                    tokenStr = tokenStr.substring(0, j);
+                }
+
                 // Add the real length of the token to i
                 Token<?> token = Token.interpret(tokenStr);
                 tokens.add(token);
                 switch (token.getType()) {
-                case TokenType.NUMBER:
-                    while (i < expression.length() && (expression.charAt(i) == '-' || Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
-                        i++;
-                    };
-                    break;
-                case TokenType.OPERATOR:
-                    i += ((Operator)token.getData()).getToken().length();
-                    break;
-                case TokenType.FUNCTION:
-                    i += ((MathFunction)token.getData()).getToken().length();
-                    break;
-                default:
-                    i += tokenStr.length();
-                    break;
+                    case TokenType.NUMBER:
+                        i += tokenStr.length(); // It's already known to be the length of the number
+                        break;
+                    case TokenType.OPERATOR:
+                        i += ((Operator) token.getData()).getToken().length();
+                        break;
+                    case TokenType.FUNCTION:
+                        i += ((MathFunction) token.getData()).getToken().length();
+                        break;
+                    default:
+                        i += tokenStr.length();
+                        break;
                 }
 
-                i--;
+                // The index of the character after the end is 1 less than the token length
+                tokenEnd = --i;
 
                 if (tokenEnd >= expression.length() - 1) {
                     break;
